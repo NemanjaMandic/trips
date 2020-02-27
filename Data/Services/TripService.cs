@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace trips.Data
 {
@@ -7,7 +8,7 @@ namespace trips.Data
     {
         public void AddTrip(Trip trip)
         {
-            throw new System.NotImplementedException();
+           Data.Trips.Add(trip);
         }
 
         public void DeleteTrip(int tripId)
@@ -20,10 +21,8 @@ namespace trips.Data
             return base.Equals(obj);
         }
 
-        public List<Trip> GetAllTrips()
-        {
-            throw new System.NotImplementedException();
-        }
+        public List<Trip> GetAllTrips() => Data.Trips.ToList();
+        
 
         public override int GetHashCode()
         {
