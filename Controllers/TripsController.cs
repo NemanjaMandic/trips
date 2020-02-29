@@ -11,15 +11,32 @@ public class TripsController: Controller {
         this.service = service;
     }
 
+    [HttpGet("SingleTrip/{id}")]
+    public IActionResult GetTripById(int id){
+        var trip = service.GetTripById(id);
+        return Ok(trip);
+    }
     [HttpPost("AddTrip")]
     public IActionResult AddTrip([FromBody]Trip trip){
         if(trip != null){
-            service.AddTrip(trip)
+            service.AddTrip(trip);
         }
         return Ok();
     }
 
-    [HttpGet("GetTrips")]
+    [HttpPut("UpdateTrip/{id}")]
+    public IActionResult UpdateTrip(int id, [FromBody] Trip trip){
+        service.UpdateTrip(id, trip);
+        return Ok(trip);
+    }
+
+    [HttpDelete("DeleteTrip/{id}")]
+    public IActionResult DeleteTrip(int id){
+        service.DeleteTrip(id);
+        return Ok();
+    }
+
+    [HttpGet("[action]")]
     public IActionResult GetTrips(){
         var allTrips = service.GetAllTrips();
         return Ok(allTrips);
