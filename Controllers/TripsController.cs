@@ -25,9 +25,14 @@ public class TripsController: Controller {
     }
 
     [HttpPut("UpdateTrip/{id}")]
-    public IActionResult UpdateTrip(int id, [FromBody] Trip trip){
-        service.UpdateTrip(id, trip);
-        return Ok(trip);
+    public IActionResult UpdateTrip(int id, [FromBody]Trip trip){
+        
+        if(trip != null){
+           service.UpdateTrip(id, trip);
+        }
+            
+    
+        return Ok();
     }
 
     [HttpDelete("DeleteTrip/{id}")]

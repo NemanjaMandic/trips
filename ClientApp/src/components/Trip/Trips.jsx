@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import axios from 'axios';
 export class Trips extends Component {
   
 
@@ -12,6 +12,21 @@ export class Trips extends Component {
     
   }
 
+  componentDidMount(){
+      this.populateTripsData()
+  }
+
+  onTripUpdate = (id) => {
+    const { history } = this.props;
+    history.push(`/update/${id}`)
+  }
+
+  populateTripsData = () => {
+    axios.get("api/Trips/GetTrips").then(result => {
+        const response = result.data;
+        this.setState({trips: response, loading: false});
+    })
+  }
  renderAlltripsTable = () => {
   return(
       <table className="table table-striped">
@@ -25,20 +40,25 @@ export class Trips extends Component {
               </tr>
           </thead>
           <tbody>
-              <tr>
-                  <td>A</td>
-                  <td>A</td>
-                  <td>A</td>
-                  <td>A</td>
-                  <td>- </td>
-              </tr>
-              <tr>
-                  <td>A</td>
-                  <td>A</td>
-                  <td>A</td>
-                  <td>A</td>
-                  <td>- </td>
-              </tr>
+
+              {this.state.trips.map(trip => {
+                  return(
+                      <tr key={trip.id}>
+                          <td>{trip.name}</td>
+                          <td>{trip.description}</td>
+                          <td>{new Date(trip.dateStarted).toLocaleDateString()}</td>
+                          <td>{trip.dateCompleted ? new Date(trip.dateCompleted).toLocaleDateString() : '-'}</td>
+                          <td> 
+                              <div className="form-group">
+                                <button onClick={() => this.onTripUpdate(trip.id)} className="btn btn-success">
+                                    Update
+                                </button>
+                              </div>
+                          </td>
+                      </tr>
+                  )
+              })}
+             
           </tbody>
       </table>
   )
@@ -47,7 +67,7 @@ export class Trips extends Component {
       const content = this.state.loading ? (
           <p><em>Loading...</em></p>
       ) : (
-          this.renderAlltripsTable(this.state.trips)
+          this.renderAlltripsTable()
       )
     return (
       <div>
@@ -55,7 +75,6 @@ export class Trips extends Component {
 
         <p>Here you can see all trips.</p>
 
-        <p aria-live="polite">Current count: <strong>{this.state.currentCount}</strong></p>
 
         { content }
       </div>
