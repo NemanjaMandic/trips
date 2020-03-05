@@ -58,8 +58,6 @@ export class Update extends Component {
           DateCompleted: this.state.dateCompleted ? new Date(this.state.dateCompleted).toISOString() : ''
       }
 
-      
-   console.log(tripObject);
 
    axios.put(`api/Trips/UpdateTrip/${id}`, tripObject).then(result => {
     history.push("/trips");

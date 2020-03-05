@@ -7,7 +7,9 @@ export class Trips extends Component {
     super(props);
     this.state = { 
         trips: [],
-        loading: true
+        loading: true,
+        failed: false,
+        error: ''
      };
     
   }
@@ -21,10 +23,17 @@ export class Trips extends Component {
     history.push(`/update/${id}`)
   }
 
+  onTripDelete = (id) => {
+    const { history } = this.props;
+    history.push(`/delete/${id}`)
+  }
+
   populateTripsData = () => {
     axios.get("api/Trips/GetTrips").then(result => {
         const response = result.data;
-        this.setState({trips: response, loading: false});
+        this.setState({trips: response, loading: false, failed: false, error: ""});
+    }).catch(error => {
+      this.setState({trips: [], loading: false, failed: true, error: "Trips could not be loaded"});
     })
   }
  renderAlltripsTable = () => {
@@ -53,6 +62,9 @@ export class Trips extends Component {
                                 <button onClick={() => this.onTripUpdate(trip.id)} className="btn btn-success">
                                     Update
                                 </button>
+                                <button onClick={() => this.onTripDelete(trip.id)} className="btn btn-danger">
+                                    Delete
+                                </button>
                               </div>
                           </td>
                       </tr>
@@ -67,7 +79,11 @@ export class Trips extends Component {
       const content = this.state.loading ? (
           <p><em>Loading...</em></p>
       ) : (
-          this.renderAlltripsTable()
+          this.state.failed ? (
+            <div className="text-danger">
+              {this.state.error}
+            </div>
+          ) : (this.renderAlltripsTable())
       )
     return (
       <div>

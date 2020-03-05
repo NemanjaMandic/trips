@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Mvc;
 using trips.Data;
 
@@ -43,8 +44,14 @@ public class TripsController: Controller {
 
     [HttpGet("[action]")]
     public IActionResult GetTrips(){
-        var allTrips = service.GetAllTrips();
-        return Ok(allTrips);
+        try{
+           
+           var allTrips = service.GetAllTrips();
+           return Ok(allTrips);
+        }catch(Exception exc){
+           return BadRequest(exc.Message);
+        }
+        
     }
     }
 }
