@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+
+import { connect } from 'react-redux';
+import { getAllTrips } from '../../actions/tripActions';
+
 export class Trips extends Component {
   
 
@@ -15,9 +19,14 @@ export class Trips extends Component {
   }
 
   componentDidMount(){
-      this.populateTripsData()
+     this.props.getAllTrips();
   }
 
+  componentDidUpdate(prevProps){
+    if(prevProps.trips.data != this.props.trips.data){
+      this.setState({trips: this.props.trips.data})
+    }
+  }
   onTripUpdate = (id) => {
     const { history } = this.props;
     history.push(`/update/${id}`)
@@ -28,14 +37,14 @@ export class Trips extends Component {
     history.push(`/delete/${id}`)
   }
 
-  populateTripsData = () => {
-    axios.get("api/Trips/GetTrips").then(result => {
-        const response = result.data;
-        this.setState({trips: response, loading: false, failed: false, error: ""});
-    }).catch(error => {
-      this.setState({trips: [], loading: false, failed: true, error: "Trips could not be loaded"});
-    })
-  }
+  // populateTripsData = () => {
+  //   axios.get("api/Trips/GetTrips").then(result => {
+  //       const response = result.data;
+  //       this.setState({trips: response, loading: false, failed: false, error: ""});
+  //   }).catch(error => {
+  //     this.setState({trips: [], loading: false, failed: true, error: "Trips could not be loaded"});
+  //   })
+  // }
  renderAlltripsTable = () => {
   return(
       <table className="table table-striped">
@@ -76,15 +85,23 @@ export class Trips extends Component {
   )
 }
   render() {
-      const content = this.state.loading ? (
-          <p><em>Loading...</em></p>
-      ) : (
-          this.state.failed ? (
-            <div className="text-danger">
-              {this.state.error}
-            </div>
-          ) : (this.renderAlltripsTable())
-      )
+      // const content = this.state.loading ? (
+      //     <p><em>Loading...</em></p>
+      // ) : (
+      //     this.state.failed ? (
+      //       <div className="text-danger">
+      //         {this.state.error}
+      //       </div>
+      //     ) : (this.renderAlltripsTable())
+      // )
+
+      const content = this.props.trips.loading ? (
+        <p><em>Loading...</em></p>
+      ): (
+        this.state.trips.length && this.renderAlltripsTable()
+      );
+
+
     return (
       <div>
         <h1>All trips</h1>
@@ -97,3 +114,11 @@ export class Trips extends Component {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    trips: state.trips
+  }
+}
+
+export default connect(mapStateToProps, {getAllTrips})(Trips);

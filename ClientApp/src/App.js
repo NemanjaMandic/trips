@@ -4,7 +4,7 @@ import { Layout } from "./components/Layout";
 import { Home } from "./components/Home";
 import { FetchData } from "./components/FetchData";
 import { Counter } from "./components/Counter";
-import { Trips } from "./components/Trip/Trips";
+import Trips from "./components/Trip/Trips";
 import { Create } from "./components/Trip/Create";
 import { Update } from "./components/Trip/Update";
 import { Delete } from "./components/Trip/Delete";
