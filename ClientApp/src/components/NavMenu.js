@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import {
   Collapse,
   Container,
@@ -11,41 +11,31 @@ import {
 import { Link } from "react-router-dom";
 import "./NavMenu.css";
 
-export class NavMenu extends Component {
-  static displayName = NavMenu.name;
+import { useAuth0 } from "../Auth0Wrapper";
 
-  constructor(props) {
-    super(props);
+export const NavMenu = () => {
+  const [collapsed, setCollapsed] = useState(true);
+  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
 
-    this.toggleNavbar = this.toggleNavbar.bind(this);
-    this.state = {
-      collapsed: true
-    };
-  }
+  const toggleNavbar = () => setCollapsed(!collapsed);
 
-  toggleNavbar() {
-    this.setState({
-      collapsed: !this.state.collapsed
-    });
-  }
-
-  render() {
-    return (
-      <header>
-        <Navbar
-          className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3"
-          light
-        >
-          <Container>
-            <NavbarBrand tag={Link} to="/">
-              trips
-            </NavbarBrand>
-            <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
-            <Collapse
-              className="d-sm-inline-flex flex-sm-row-reverse"
-              isOpen={!this.state.collapsed}
-              navbar
-            >
+  return (
+    <header>
+      <Navbar
+        className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3"
+        light
+      >
+        <Container>
+          <NavbarBrand tag={Link} to="/">
+            trips
+          </NavbarBrand>
+          <NavbarToggler onClick={toggleNavbar} className="mr-2" />
+          <Collapse
+            className="d-sm-inline-flex flex-sm-row-reverse"
+            isOpen={!collapsed}
+            navbar
+          >
+            {isAuthenticated ? (
               <ul className="navbar-nav flex-grow">
                 <NavItem>
                   <NavLink tag={Link} className="text-dark" to="/">
@@ -72,11 +62,27 @@ export class NavMenu extends Component {
                     Trips
                   </NavLink>
                 </NavItem>
+                <NavItem>
+                  <button className="btn btn-danger" onClick={() => logout()}>
+                    Log Out
+                  </button>
+                </NavItem>
               </ul>
-            </Collapse>
-          </Container>
-        </Navbar>
-      </header>
-    );
-  }
-}
+            ) : (
+              <ul className="navbar-nav flex-grow">
+                <NavItem>
+                  <button
+                    className="btn btn-success"
+                    onClick={() => loginWithRedirect()}
+                  >
+                    Log In
+                  </button>
+                </NavItem>
+              </ul>
+            )}
+          </Collapse>
+        </Container>
+      </Navbar>
+    </header>
+  );
+};
